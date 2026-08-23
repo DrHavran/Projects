@@ -1,0 +1,6 @@
+Name,Weight,Can_Swim,Can_Fly,Lifespan_years,Habitat,Nocturnal,Diet,Class
+Kangaroo,85.0,No,No,23,Savannah,No,Herbivore,Mammal
+Orca,5000.0,Yes,No,50,Ocean,No,Carnivore,Mammal
+Chameleon,0.2,No,No,7,Forest,No,Insectivore,Reptile
+Hummingbird,0.004,No,Yes,5,Tropical,No,Herbivore,Bird
+Axolotl,0.3,Yes,No,12,Freshwater,No,Carnivore,Amphibian

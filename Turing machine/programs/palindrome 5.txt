@@ -1,0 +1,34 @@
+1,qStart,qEnd
+qStart,0,-1,S,qZeroOuter                //Check outer numbers
+qStart,1,-1,S,qOneOuter
+qZeroOuter,-2,-1,L,qCheckOuterZero
+qZeroOuter,-1,-1,R,qZeroOuter
+qOneOuter,-2,-1,L,qCheckOuterOne
+qOneOuter,-1,-1,R,qOneOuter
+qCheckOuterZero,0,-1,L,qCheckInner
+qCheckOuterZero,1,-1,S,qFalse
+qCheckOuterOne,1,-1,L,qCheckInner
+qCheckOuterOne,0,-1,S,qFalse
+
+qCheckInner,0,-1,S,qZeroInner           //Check inner numbers
+qCheckInner,1,-1,S,qOneInner
+qZeroInner,-2,-1,R,qRightZero
+qZeroInner,-1,-1,L,qZeroInner
+qOneInner,-2,-1,R,qRightOne
+qOneInner,-1,-1,L,qOneInner
+
+qRightOne,-1,-1,R,qCheckInnerOne        //Moves one right
+qRightZero,-1,-1,R,qCheckInnerZero
+
+qCheckInnerOne,1,-1,S,qCorrect     //Check if the inner number is correct
+qCheckInnerOne,0,-1,S,qFalse
+qCheckInnerZero,0,-1,S,qCorrect
+qCheckInnerZero,1,-1,S,qFalse
+
+qCorrect,-2,-1,R,qWriteCorrect          //Write that it is a palindrome
+qCorrect,-1,-1,R,qCorrect
+qWriteCorrect,-1,1,S,qEnd
+
+qFalse,-2,-1,R,qWriteFalse              //Write that it isn't a palindrome
+qFalse,-1,-1,R,qFalse
+qWriteFalse,-1,0,S,qEnd
