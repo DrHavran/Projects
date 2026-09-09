@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.Parts.Cluster;
-import org.example.Parts.Node;
+import org.example.Models.Cluster;
+import org.example.Models.Node;
 
 import java.util.HashSet;
 
@@ -17,7 +17,7 @@ public class Logic {
             movement = false;
             step();
             for(Cluster cluster : data.getClusters()) {
-                if (cluster.isMoved()) {
+                if (cluster.hasMoved()) {
                     movement = true;
                     break;
                 }

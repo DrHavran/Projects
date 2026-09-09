@@ -33,11 +33,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2198668e-54f8-4463-9154-f0b143d3a46e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/perceptron.c" beforeDir="false" afterPath="$PROJECT_DIR$/data/perceptron.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/perceptron.h" beforeDir="false" afterPath="$PROJECT_DIR$/data/perceptron.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/draw/draw.c" beforeDir="false" afterPath="$PROJECT_DIR$/draw/draw.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/draw/draw.h" beforeDir="false" afterPath="$PROJECT_DIR$/draw/draw.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logic/logic.c" beforeDir="false" afterPath="$PROJECT_DIR$/logic/logic.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +49,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/data/perceptron.c" root0="FORCE_HIGHLIGHTING" />
@@ -82,9 +81,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;C/C++ File.main.c.executor&quot;: &quot;Run&quot;,
     &quot;CMake Application.Perceptor.executor&quot;: &quot;Run&quot;,
     &quot;CMake Application.Perceptron.executor&quot;: &quot;Run&quot;,
     &quot;CMake Application.Run.executor&quot;: &quot;Run&quot;,
+    &quot;CMake Debug.Unnamed.executor&quot;: &quot;Debug&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -99,7 +100,7 @@
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Havran/Desktop/Code/School/Projects/Perceptron&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Havran/Desktop/Code/Projects/Perceptron&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
@@ -136,12 +137,12 @@
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Run" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Perceptron" TARGET_NAME="Perceptron" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Perceptron" RUN_TARGET_NAME="Perceptron">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Perceptron" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Perceptron" TARGET_NAME="Perceptron" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Perceptron" RUN_TARGET_NAME="Perceptron">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -174,11 +175,18 @@
       <workItem from="1779959221833" duration="47000" />
       <workItem from="1779959300241" duration="1382000" />
       <workItem from="1779961250917" duration="6827000" />
+      <workItem from="1788875089104" duration="292000" />
+      <workItem from="1788875826483" duration="453000" />
+      <workItem from="1788876353813" duration="900000" />
+      <workItem from="1788935609122" duration="353000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.c" />
   </component>
   <component name="VCPKGProject">
     <isAutomaticCheckingOnLaunch value="false" />

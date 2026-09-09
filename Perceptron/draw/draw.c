@@ -8,15 +8,15 @@ void drawWindow() {
 
     InitWindow(screenWidth, screenHeight, "Perceptron");
 
-    const Image icon = LoadImage("icon.png");
-    SetWindowIcon(icon);
-    UnloadImage(icon);
+    // const Image icon = LoadImage("icon.png");
+    // SetWindowIcon(icon);
+    // UnloadImage(icon);
 
-    SetTargetFPS(60);
+    SetTargetFPS(3);
 }
 void drawAll(const ArrayList list, const LinearPerceptron perceptron) {
-    ClearBackground(RAYWHITE);
     BeginDrawing();
+    ClearBackground(RAYWHITE);
     for (int i = 0; i < list.size; i++) {
         const struct node *n = list.data[i];
         drawNode(*n);

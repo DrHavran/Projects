@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.Parts.Cluster;
-import org.example.Parts.Node;
+import org.example.Models.Cluster;
+import org.example.Models.Node;
 
 import java.io.File;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class Data {
 
     private void loadData() {
         try {
-            Scanner sc = new Scanner(new File("Data.csv"));
+            Scanner sc = new Scanner(new File("data.csv"));
 
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");

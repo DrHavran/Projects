@@ -1,46 +1,55 @@
+import Models.Entry;
+import Models.Node;
+
 import java.io.File;
 import java.util.*;
 
 public class Data {
-    private final ArrayList<String> attributes;
-    private final ArrayList<HashMap<String, String>> points;
-    private final ArrayList<HashMap<String, String>> testPoints;
+    private final ArrayList<Entry> entries;
+    private final ArrayList<Entry> testEntries;
     private final ArrayList<Node> roots;
 
     public Data() {
-        this.points = new ArrayList<>();
-        this.testPoints = new ArrayList<>();
-        this.attributes = new ArrayList<>();
+        this.entries = new ArrayList<>();
+        this.testEntries = new ArrayList<>();
         this.roots = new ArrayList<>();
-        loadData(points, "train_" + Settings.dataset + ".csv");
-        loadData(testPoints, "test_" + Settings.dataset +".csv");
-        System.out.println(points.size() + " points loaded");
-        System.out.println(testPoints.size() + " test points loaded");
+
+        loadData(entries, "train_" + Settings.dataset);
+        loadData(testEntries, "test_" + Settings.dataset);
+        System.out.println(entries.size() + " points loaded");
+        System.out.println(testEntries.size() + " test points loaded");
 
         loadRoots();
     }
 
-    private void loadData(ArrayList<HashMap<String, String>> list, String fileName) {
+    private void loadData(ArrayList<Entry> list, String fileName) {
         try{
-            Scanner sc = new Scanner(new File("data/" + fileName));
-            String line = sc.nextLine();
-
-            if(attributes.isEmpty()){
-                attributes.addAll(List.of(line.split(",")));
-                System.out.println(Arrays.toString(attributes.toArray()));
-            }
+            Scanner sc = new Scanner(new File("data/" + fileName + ".csv"));
+            HashMap<String, Integer> headerInformation = loadHeaderInformation(sc.nextLine());
 
             while(sc.hasNextLine()) {
-                HashMap<String, String> point = new HashMap<>();
-                line = sc.nextLine();
+                String line = sc.nextLine();
                 String[] data = line.split(",");
-                for(int i = 0; i < data.length; i++) {
-                    point.put(attributes.get(i), data[i]);
-                }
-                list.add(point);
+
+                String name = data[headerInformation.get(Settings.name)];
+                String classification = data[headerInformation.get(Settings.type)];
+                Entry entry = new Entry(name, classification);
+
+                headerInformation.keySet().stream()
+                        .filter(columnValue -> !columnValue.equals(Settings.name))
+                        .filter(columnValue -> !columnValue.equals(Settings.type))
+                        .forEach(columnValue -> {
+                            int columnNumber = headerInformation.get(columnValue);
+                            String value = data[columnNumber];
+
+                            entry.addAttribute( new Entry.Attribute(
+                                    columnValue, value
+                            ));
+                        });
+                list.add(entry);
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Data.java loadData() - " + e.getMessage());
         }
     }
 
@@ -51,20 +60,31 @@ public class Data {
                 roots.add(root);
             }
             for(int i = 0; i < Settings.trees; i++){
-                for(HashMap<String, String> point : points){
-                    roots.get((int) (Math.random() * roots.size())).addPoint(point);
+                for(Entry entry : entries){
+                    roots.get((int) (Math.random() * roots.size())).addPoint(entry);
                 }
             }
         }else{
             Node root = new Node();
-            root.setPoints(points);
+            root.setEntries(entries);
             roots.add(root);
         }
     }
 
-    public boolean answer(){
+    private HashMap<String, Integer> loadHeaderInformation(String line){
+        HashMap<String, Integer> headerInformation = new HashMap<>();
+        String[] parts = line.split(",");
+
+        for(int i = 0; i < parts.length; i++){
+            headerInformation.put(parts[i], i);
+        }
+
+        return headerInformation;
+    }
+
+    public boolean isClassificationNumerical(){
         try{
-            double check = Double.parseDouble(points.getFirst().get(Settings.type));
+            double check = Double.parseDouble(entries.getFirst().getClassification());
             System.out.println(check);
             return true;
         }catch (NumberFormatException e){
@@ -72,10 +92,10 @@ public class Data {
         }
     }
     public ArrayList<Node> getRoots(){ return roots; }
-    public ArrayList<HashMap<String, String>> getTestPoints() {
-        return testPoints;
+    public ArrayList<Entry> getTestEntries() {
+        return testEntries;
     }
-    public ArrayList<String> getAttributes() {
-        return attributes;
+    public ArrayList<Entry> getEntries() {
+        return entries;
     }
 }

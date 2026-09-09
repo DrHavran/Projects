@@ -1,4 +1,4 @@
-package org.example.Parts;
+package org.example.Models;
 
 public class Node {
     private double x, y;

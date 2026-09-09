@@ -25,9 +25,10 @@ class JWTFunctions(private val oAUTHSecret: String) {
     }
 
     fun checkToken(token: String): Boolean {
-        val header = token.split(".")[0]
-        val payload = token.split(".")[1]
-        val signature = token.split(".")[2]
+        String tokenParts = token.split(".")
+        val header = tokenParts[0]
+        val payload = tokenParts[1]
+        val signature = tokenParts[2]
 
         if(generateSignature(header, payload) == signature){
             val decodedPayload = JSONObject(encoder.decodeBase64(payload))

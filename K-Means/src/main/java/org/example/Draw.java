@@ -3,7 +3,7 @@ package org.example;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import org.example.Parts.Cluster;
+import org.example.Models.Cluster;
 
 import java.util.Random;
 

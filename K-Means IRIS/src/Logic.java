@@ -19,7 +19,6 @@ public class Logic {
             int score = checkTest();
             if(bestScore < score){
                 bestScore = score;
-                bestClusters = data.getClusters();
             }
             clear();
         }

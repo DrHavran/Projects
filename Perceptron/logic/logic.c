@@ -1,4 +1,5 @@
 #include "logic.h"
+#include <string.h>
 #include "../data/arrayList.h"
 #include "../data/data.h"
 #include "../draw/draw.h"
@@ -9,7 +10,8 @@ void setUpPerceptron(char *method, const char *fileName) {
     const ArrayList list = loadData(fileName);
 
     drawWindow();
-    if (method == "linear") {
+
+    if (strcmp(method, "linear") == 0) {
         LinearPerceptron perceptron;
         initLinearPerceptron(&perceptron);
         while (!WindowShouldClose()) {
@@ -23,9 +25,5 @@ void setUpPerceptron(char *method, const char *fileName) {
             }
             drawAll(list, perceptron);
         }
-    }else if (method == "quadratic") {
-
     }
-
-    CloseWindow();
 }

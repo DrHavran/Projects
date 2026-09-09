@@ -1,21 +1,22 @@
+import Models.Check;
+import Models.Entry;
+import Models.Node;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Logic {
     private final Data data;
-    private final boolean numberAnswer;
 
     public Logic() {
         this.data = new Data();
-        numberAnswer = data.answer();
 
         for(Node root : data.getRoots()){
             generateATree(root);
         }
 
-        printATree();
-
-        testTheTree(data.getRoots());
+        printTrees();
+        testTrees(data.getRoots());
     }
 
     private void generateATree(Node root) {
@@ -30,24 +31,30 @@ public class Logic {
             String bestAttribute = "";
             Check bestReq = null;
 
-            ArrayList<String> attributes  = new ArrayList<>(data.getAttributes());
-            attributes.remove(Settings.type);
-            attributes.remove(Settings.name);
+            ArrayList<String> attributes  = new ArrayList<>(data.getEntries().getFirst().getAttributeNames());
 
+            /*
+             *  The try catch is here to separate numerical and string attributes
+             *  - Numerical attributes are applied with "<"
+             *  - String attributes are applied with "="
+             */
             for(String attribute : attributes){
                try{
                    ArrayList<Double> values = new ArrayList<>();
-                   for(HashMap<String, String> point : current.getPoints()){
-                       values.add(Double.parseDouble(point.get(attribute)));
+                   for(Entry entry : current.getEntries()){
+                       // This part here crashed if the attribute is String based
+                       values.add(Double.parseDouble(entry.getAttributes().get(attribute).value()));
                    }
                    values = values.stream().sorted().collect(Collectors.toCollection(ArrayList::new));
                    ArrayList<Double> options = new ArrayList<>();
+                   // The values for numerical values are always the average of two adjacent values
                    for(int i = 0; i < values.size()-1; i++){
                        options.add((values.get(i) + values.get(i+1)) / 2);
                    }
+
                    for(Double option : options){
                        Check req = (i) -> (Double.parseDouble((String) i) < option);
-                       double weight = count(current, attribute, req);
+                       double weight = sortAndCheckWeight(current, attribute, req);
                        if(weight < bestWeight){
                            bestWeight = weight;
                            bestAttribute = attribute;
@@ -57,12 +64,12 @@ public class Logic {
                    }
                }catch (NumberFormatException e){
                    HashSet<String> options = new HashSet<>();
-                   for(HashMap<String, String> point : current.getPoints()){
-                       options.add(point.get(attribute));
+                   for(Entry entry : current.getEntries()){
+                       options.add(entry.getAttributes().get(attribute).value());
                    }
                    for(String option : options){
                        Check req = (i) -> (i.equals(option));
-                       double weight = count(current, attribute, req);
+                       double weight = sortAndCheckWeight(current, attribute, req);
                        if(weight < bestWeight){
                            bestWeight = weight;
                            bestAttribute = attribute;
@@ -79,78 +86,94 @@ public class Logic {
             current.setRightBranch(right);
             current.setOption(bestOption);
             current.setCheckReq(bestReq);
-            current.setCheckString(bestAttribute);
+            current.setNodeAttribute(bestAttribute);
 
             System.out.println("Best split on: " + bestAttribute + bestOption);
-            for(HashMap<String, String> point : current.getPoints()){
-                if(current.check(point)){
-                    left.addPoint(point);
+            for(Entry entry : current.getEntries()){
+                if(current.check(entry)){
+                    left.addPoint(entry);
                 }else{
-                    right.addPoint(point);
+                    right.addPoint(entry);
                 }
             }
 
-            if(numberAnswer){
-                if(left.getPoints().size() > Settings.minLeafs){
+            if(data.isClassificationNumerical()){
+                if(left.getEntries().size() > Settings.minLeafs){
                     queue.add(left);
                 }
-                if(right.getPoints().size() > Settings.minLeafs){
+                if(right.getEntries().size() > Settings.minLeafs){
                     queue.add(right);
                 }
             }else{
-                if(countGini(left.getPoints()) != 0){
+                if(countGini(left.getEntries()) != 0){
                     queue.add(left);
                 }
-                if(countGini(right.getPoints()) != 0){
+                if(countGini(right.getEntries()) != 0){
                     queue.add(right);
                 }
             }
         }
     }
 
-    private double count(Node current, String attribute, Check req){
-        ArrayList<HashMap<String, String>> leftBranch = new ArrayList<>();
-        ArrayList<HashMap<String, String>> rightBranch = new ArrayList<>();
+    private double sortAndCheckWeight(Node current, String attribute, Check req){
+        ArrayList<Entry> leftBranch = new ArrayList<>();
+        ArrayList<Entry> rightBranch = new ArrayList<>();
 
-        for(HashMap<String, String> point : current.getPoints()){
-            if(req.check(point.get(attribute))){
-                leftBranch.add(point);
+        for(Entry entry : current.getEntries()){
+            if(req.check(entry.getAttributes().get(attribute).value())){
+                leftBranch.add(entry);
             }else{
-                rightBranch.add(point);
+                rightBranch.add(entry);
             }
         }
 
         return countWeight(leftBranch, rightBranch);
     }
-    private double countWeight(ArrayList<HashMap<String, String>> left, ArrayList<HashMap<String, String>> right){
+    private double countWeight(ArrayList<Entry> left, ArrayList<Entry> right){
         double total = left.size() + right.size();
         return (left.size()/total) * countGini(left) + (right.size()/total) * countGini(right);
     }
-    private double countGini(ArrayList<HashMap<String, String>> list){
-        String type = Settings.type;
+    private double countGini(ArrayList<Entry> list){
         HashMap<String, Double> types = new HashMap<>();
-        for(HashMap<String, String> point : list){
-            if(types.containsKey(point.get(type))){
-                types.replace(point.get(type), types.get(point.get(type)) + 1);
+        for(Entry entry : list){
+            if(types.containsKey(entry.getClassification())){
+                types.replace(entry.getClassification(), types.get(entry.getClassification()) + 1);
             }else{
-                types.put(point.get(type), 1.0);
+                types.put(entry.getClassification(), 1.0);
             }
         }
 
-        double total = 0;
-        for(Double number : types.values()){
-            total += (Math.pow(number/list.size(), 2));
-        }
+        double total = types.values().stream()
+                .mapToDouble(value -> Math.pow(value/list.size(), 2))
+                .sum();
 
         return 1 - total;
     }
 
-    private void printATree() {
+    private Node getLeaf(Node node, Entry entry){
+        Node current = node;
+
+        while(current.getLeftBranch() != null){
+            if(current.check(entry)){
+                current = current.getLeftBranch();
+            }else {
+                current = current.getRightBranch();
+            }
+        }
+
+        return current;
+    }
+
+    /**
+     * These three functions are for visualizing the tree only
+     */
+    private void printTrees() {
         System.out.println();
         for(Node root : data.getRoots()){
             printNode(root, "", true);
         }
     }
+
     private void printNode(Node node, String prefix, boolean isLast) {
         if (node == null) return;
 
@@ -167,47 +190,46 @@ public class Logic {
         }
 
         if (node.getLeftBranch() != null) {
-            System.out.println("[" + node.getCheckString() + node.getOption() + "]");
+            System.out.println("[" + node.getNodeAttribute() + node.getOption() + "]");
 
             String childPrefix = prefix + (isLast ? "    " : "│   ");
             printNode(node.getLeftBranch(), childPrefix, false);
             printNode(node.getRightBranch(), childPrefix, true);
         } else {
             System.out.print("[");
-            node.getPoints().forEach(x ->
-                    System.out.print(x.get(Settings.name) + " ")
+            node.getEntries().forEach(entry ->
+                    System.out.print(entry.getName() + " ")
             );
-            if(numberAnswer){
+            if(data.isClassificationNumerical()){
                 double count = 0;
-                for(HashMap<String, String> point : node.getPoints()){
-                    count += Double.parseDouble(point.get(Settings.type));
+                for(Entry entry : node.getEntries()){
+                    count += Double.parseDouble(entry.getClassification());
                 }
-                System.out.print("- average: " + count/node.getPoints().size());
+                System.out.print("- average: " + count/node.getEntries().size());
             }else{
-                System.out.print("- " + node.getPoints().getFirst().get(Settings.type));
+                System.out.print("- " + node.getEntries().getFirst().getClassification());
             }
             System.out.println("]");
         }
     }
 
-    private void testTheTree(ArrayList<Node> roots){
+    private void testTrees(ArrayList<Node> roots){
         System.out.println();
-        for(HashMap<String, String> point : data.getTestPoints()){
-
+        for(Entry entry : data.getTestEntries()){
             ArrayList<Double> numberResults = new ArrayList<>();
             HashMap<String, Integer> stringResults = new HashMap<>();
             for(Node root : roots){
 
-                Node leaf = getLeaf(root, point);
+                Node leaf = getLeaf(root, entry);
 
-                if(numberAnswer){
+                if(data.isClassificationNumerical()){
                     double count = 0;
-                    for(HashMap<String, String> data : leaf.getPoints()){
-                        count += Double.parseDouble(data.get(Settings.type));
+                    for(Entry data : leaf.getEntries()){
+                        count += Double.parseDouble(data.getClassification());
                     }
-                    numberResults.add(count/leaf.getPoints().size());
+                    numberResults.add(count/leaf.getEntries().size());
                 }else{
-                    String type = leaf.getPoints().getFirst().get(Settings.type);
+                    String type = leaf.getEntries().getFirst().getClassification();
                     if(roots.size() != 1){
                         System.out.println("subtree guess: " + type);
                     }
@@ -219,27 +241,24 @@ public class Logic {
                 }
             }
 
-            if(numberAnswer){
-                double count = 0;
-                for(Double number : numberResults){
-                    count += number;
-                }
-                System.out.print("The tree guessed that " + point.get(Settings.name) + " is around " + count/numberResults.size());
-                System.out.println(", the real answer was " + point.get(Settings.type));
+            if(data.isClassificationNumerical()){
+                double count = numberResults.stream().mapToDouble(i -> i).sum();
+                System.out.print("The tree guessed that " + entry.getName() + " is around " + count/numberResults.size());
+                System.out.println(", the real answer was " + entry.getClassification());
             }else{
                 int maxNumb = 0;
                 String maxString = "";
 
-                for(Map.Entry<String, Integer> entry : stringResults.entrySet()){
-                    if(entry.getValue() > maxNumb){
-                        maxString = entry.getKey();
-                        maxNumb = entry.getValue();
+                for(Map.Entry<String, Integer> data : stringResults.entrySet()){
+                    if(data.getValue() > maxNumb){
+                        maxString = data.getKey();
+                        maxNumb = data.getValue();
                     }
                 }
 
                 String predicted = maxString;
-                String actual = point.get(Settings.type);
-                System.out.print("The tree guessed that " + point.get(Settings.name) + " is " + predicted);
+                String actual = entry.getClassification();
+                System.out.print("The tree guessed that " + entry.getName() + " is " + predicted);
                 if (Objects.equals(predicted, actual)) {
                     System.out.println(" and it's true!");
                 } else {
@@ -247,19 +266,5 @@ public class Logic {
                 }
             }
         }
-    }
-
-    private Node getLeaf(Node node, HashMap<String, String> point){
-        Node current = node;
-
-        while(current.getLeftBranch() != null){
-            if(current.check(point)){
-                current = current.getLeftBranch();
-            }else {
-                current = current.getRightBranch();
-            }
-        }
-
-        return current;
     }
 }

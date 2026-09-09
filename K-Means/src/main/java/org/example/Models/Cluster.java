@@ -1,4 +1,4 @@
-package org.example.Parts;
+package org.example.Models;
 
 import org.example.Settings;
 
@@ -58,7 +58,7 @@ public class Cluster {
     public double getY() {
         return y;
     }
-    public boolean isMoved() {
+    public boolean hasMoved() {
         return moved;
     }
 }
