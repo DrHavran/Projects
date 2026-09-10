@@ -10,8 +10,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Logic logic = new Logic();
 
-        logic.loadFile("House");
+        logic.loadFile("Street");
         logic.drawMap();
+        logic.findPath("66973468", "693323283");
 
         Scene scene = new Scene(logic.getRoot(), GlobalSettings.screenWidth, GlobalSettings.screenHeight);
         primaryStage.setTitle("Map");

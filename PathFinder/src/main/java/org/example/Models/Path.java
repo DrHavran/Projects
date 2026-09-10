@@ -15,6 +15,13 @@ public class Path {
         this.distance = Math.sqrt(Math.pow(lonDifference, 2) + Math.pow(lanDifference, 2));
     }
 
+    public Node getOtherNode(Node node){
+        if(start == node){
+            return end;
+        }else{
+            return start;
+        }
+    }
     public Node getStart() {
         return start;
     }

@@ -1,7 +1,7 @@
 package org.example.PathFinder;
 
-import org.example.Logic.Settings;
-import org.example.Node;
+import org.example.Models.Node;
+import org.example.Models.Path;
 
 public class DSA extends PathFinder {
 
@@ -11,7 +11,7 @@ public class DSA extends PathFinder {
 
     @Override
     public void findPath(Node start, Node end){
-        clean();
+        cleanLists();
 
         start.setValue(0);
         visited.add(start);
@@ -19,19 +19,19 @@ public class DSA extends PathFinder {
 
         while(!priorityQueue.isEmpty()){
             Node selected = priorityQueue.poll();
-            for(Node node : selected.getPaths()){
+            for(Path path : selected.getPaths()){
+                Node node = path.getOtherNode(selected);
                 if(node == end){
                     createPath(selected);
-                    if(Settings.print){
-                        System.out.println("found end");
-                        System.out.println("DSA took " + steps + " steps");
-                    }
+                    System.out.println("found end");
+                    System.out.println("DSA took " + steps + " steps");
+                    createPath(end);
                     return;
                 }
 
                 if(!visited.contains(node)){
                     steps++;
-                    double distance = calculateDistance(selected, node);
+                    double distance = path.getDistance();
                     if(selected.getValue() + distance < node.getValue()){
                         node.setValue(selected.getValue() + distance);
                         node.setParent(selected);

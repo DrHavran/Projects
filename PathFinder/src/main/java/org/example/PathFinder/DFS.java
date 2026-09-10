@@ -1,8 +1,8 @@
 package org.example.PathFinder;
 
-import org.example.Logic.Settings;
-import org.example.Node;
-import org.example.Path;
+
+import org.example.Models.Node;
+import org.example.Models.Path;
 
 public class DFS extends PathFinder {
 
@@ -13,25 +13,23 @@ public class DFS extends PathFinder {
     }
 
     public void findPath(Node start, Node end){
-        clean();
         this.end = end;
+        cleanLists();
         nextStep(start);
     }
 
     private boolean nextStep(Node current){
         steps++;
         visited.add(current);
-        for(Node node : current.getPaths()){
+        for(Node node : current.getAdjacentNodes()){
             if(node == end){
-                if(Settings.print){
-                    System.out.println("found end");
-                    System.out.println("DFS took " + steps + " steps");
-                }
+                System.out.println("found end");
+                System.out.println("DFS took " + steps + " steps");
                 return true;
             }
             if (!visited.contains(node)) {
                 if (nextStep(node)) {
-                    finalPath.add(new Path(current, node));
+                    path.add(new Path(current, node));
                     return true;
                 }
             }

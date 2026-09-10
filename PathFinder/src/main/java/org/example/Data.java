@@ -76,6 +76,7 @@ public class Data {
     }
 
     private void createPaths(Node first, Node second){
+        if (first == null || second == null) return;
         Path path = new Path(first, second);
         first.addPath(path);
         second.addPath(path);

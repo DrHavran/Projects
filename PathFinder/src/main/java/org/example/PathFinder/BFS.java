@@ -9,13 +9,15 @@ public class BFS extends PathFinder {
     }
 
     public void findPath(Node start, Node end) {
+        cleanLists();
         queue.add(start);
         visited.add(start);
         start.setParent(null);
 
         while (!queue.isEmpty()) {
             Node selected = queue.removeFirst();
-            for(Node node : selected.getPaths()){
+
+            for(Node node : selected.getAdjacentNodes()){
                 steps++;
                 if(!visited.contains(node)){
                     node.setParent(selected);
@@ -23,6 +25,7 @@ public class BFS extends PathFinder {
                     if(node == end){
                         System.out.println("Found end");
                         System.out.println("BFS took " + steps + " steps");
+                        createPath(node);
                         return;
                     } else {
                         queue.add(node);

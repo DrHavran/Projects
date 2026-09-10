@@ -1,7 +1,7 @@
 package org.example.PathFinder;
 
-import org.example.Logic.Settings;
-import org.example.Node;
+import org.example.Models.Node;
+import org.example.Models.Path;
 
 public class AStar extends PathFinder {
 
@@ -11,36 +11,33 @@ public class AStar extends PathFinder {
 
     @Override
     public void findPath(Node start, Node end){
-        clean();
+        cleanLists();
 
         start.setValue(0);
         start.setParent(null);
-        toClear.add(start);
         priorityQueue.add(start);
 
         while(!priorityQueue.isEmpty()){
             Node selected = priorityQueue.poll();
-            for(Node node : selected.getPaths()){
+            for(Path path : selected.getPaths()){
+                Node node = path.getOtherNode(selected);
                 if(node == end){
                     node.setParent(selected);
                     createPath(node);
-                    if(Settings.print){
-                        System.out.println("found end");
-                        System.out.println("A* took " + steps + " steps");
-                    }
+                    System.out.println("found end");
+                    System.out.println("A* took " + steps + " steps");
                     return;
                 }
 
                 if(!visited.contains(node)){
                     steps++;
-                    double fromStart = selected.getFromStart() + calculateDistance(selected, node);
-                    double fromEnd = calculateDistance(node, end);
+                    double totalValue = selected.getTotalValue() + path.getDistance();
+                    double distanceToEnd = calculateDistance(node, end);
 
-                    if(node.getValue() > fromStart + fromEnd){
-                        node.setValue(fromStart + fromEnd);
-                        node.setFromStart(fromStart);
+                    if(node.getValue() > totalValue + distanceToEnd){
+                        node.setValue(totalValue + distanceToEnd);
+                        node.setTotalValue(totalValue);
                         node.setParent(selected);
-                        toClear.add(node);
                         priorityQueue.add(node);
                     }
                 }
