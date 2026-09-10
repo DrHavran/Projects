@@ -1,7 +1,6 @@
-package org.example.Logic.PathFinding;
+package org.example.PathFinder;
 
-import org.example.Logic.Settings;
-import org.example.Node;
+import org.example.Models.Node;
 
 public class BFS extends PathFinder {
 
@@ -10,8 +9,6 @@ public class BFS extends PathFinder {
     }
 
     public void findPath(Node start, Node end) {
-        clean();
-
         queue.add(start);
         visited.add(start);
         start.setParent(null);
@@ -24,11 +21,8 @@ public class BFS extends PathFinder {
                     node.setParent(selected);
                     visited.add(node);
                     if(node == end){
-                        createPath(node);
-                        if(Settings.print){
-                            System.out.println("Found end");
-                            System.out.println("BFS took " + steps + " steps");
-                        }
+                        System.out.println("Found end");
+                        System.out.println("BFS took " + steps + " steps");
                         return;
                     } else {
                         queue.add(node);

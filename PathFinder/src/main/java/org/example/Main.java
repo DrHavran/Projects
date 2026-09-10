@@ -1,18 +1,19 @@
-package org.example.Logic;
+package org.example;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.Presentation.Draw;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Draw draw = new Draw();
+        Logic logic = new Logic();
 
-        Scene scene = new Scene(draw.getRoot(), Settings.screenWidth, Settings.screenHeight);
+        logic.loadFile("House");
+        logic.drawMap();
 
+        Scene scene = new Scene(logic.getRoot(), GlobalSettings.screenWidth, GlobalSettings.screenHeight);
         primaryStage.setTitle("Map");
         primaryStage.setScene(scene);
         primaryStage.show();

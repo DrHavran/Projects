@@ -1,4 +1,4 @@
-package org.example.Logic.PathFinding;
+package org.example.PathFinder;
 
 import org.example.Logic.Settings;
 import org.example.Node;
