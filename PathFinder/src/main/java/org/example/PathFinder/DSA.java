@@ -1,5 +1,6 @@
 package org.example.PathFinder;
 
+import org.example.GlobalSettings;
 import org.example.Models.Node;
 import org.example.Models.Path;
 
@@ -11,21 +12,21 @@ public class DSA extends PathFinder {
 
     @Override
     public void findPath(Node start, Node end){
-        cleanLists();
-
         start.setValue(0);
         visited.add(start);
         priorityQueue.add(start);
 
         while(!priorityQueue.isEmpty()){
             Node selected = priorityQueue.poll();
-            for(Path path : selected.getPaths()){
-                Node node = path.getOtherNode(selected);
+            for(Node node : selected.getAdjacentNodes()){
+                Path path = selected.getPaths().get(node);
                 if(node == end){
-                    createPath(selected);
-                    System.out.println("found end");
-                    System.out.println("DSA took " + steps + " steps");
-                    createPath(end);
+                    if(GlobalSettings.printPathfinderResults){
+                        System.out.println("found end");
+                        System.out.println("DSA took " + steps + " steps");
+                    }
+                    node.setParent(selected);
+                    createPath(node);
                     return;
                 }
 
@@ -41,6 +42,9 @@ public class DSA extends PathFinder {
             }
             visited.add(selected);
         }
-        System.out.println("Didnt find a path");
+
+        if(GlobalSettings.printPathfinderResults){
+            System.out.println("Didnt find a path");
+        }
     }
 }

@@ -25,30 +25,30 @@ public class Draw {
 
     public void drawMap(){
         for (Path path : data.getPaths()) {
-            drawLine(path, Color.BLACK);
+            drawLine(path, Color.BLACK, 1);
         }
         for (Node node : data.getNodes().values()) {
-            drawNode(node, Color.BLACK);
+            drawNode(node, Color.BLACK, 1);
         }
     }
 
-    public void drawLine(Path path, Paint color) {
+    public void drawLine(Path path, Paint color, int size) {
         double startX = projection.x(path.getStart().getLongitude());
         double startY = projection.y(path.getStart().getLatitude());
         double endX   = projection.x(path.getEnd().getLongitude());
         double endY   = projection.y(path.getEnd().getLatitude());
 
         Line line = new Line(startX, startY, endX, endY);
-        line.setStrokeWidth(GlobalSettings.dotSize);
+        line.setStrokeWidth(size);
         line.setStroke(color);
         root.getChildren().add(line);
     }
 
-    public void drawNode(Node node, Paint color) {
+    public void drawNode(Node node, Paint color, int size) {
         double x = projection.x(node.getLongitude());
         double y = projection.y(node.getLatitude());
 
-        Circle dot = new Circle(x, y, GlobalSettings.dotSize);
+        Circle dot = new Circle(x, y, size);
         dot.setFill(color);
         root.getChildren().add(dot);
     }

@@ -1,5 +1,6 @@
 package org.example.PathFinder;
 
+import org.example.GlobalSettings;
 import org.example.Models.Node;
 
 public class BFS extends PathFinder {
@@ -9,7 +10,6 @@ public class BFS extends PathFinder {
     }
 
     public void findPath(Node start, Node end) {
-        cleanLists();
         queue.add(start);
         visited.add(start);
         start.setParent(null);
@@ -23,8 +23,10 @@ public class BFS extends PathFinder {
                     node.setParent(selected);
                     visited.add(node);
                     if(node == end){
-                        System.out.println("Found end");
-                        System.out.println("BFS took " + steps + " steps");
+                        if(GlobalSettings.printPathfinderResults){
+                            System.out.println("found end");
+                            System.out.println("BFS took " + steps + " steps");
+                        }
                         createPath(node);
                         return;
                     } else {
@@ -33,6 +35,8 @@ public class BFS extends PathFinder {
                 }
             }
         }
-        System.out.println("Didnt find a path");
+        if(GlobalSettings.printPathfinderResults){
+            System.out.println("Didnt find a path");
+        }
     }
 }

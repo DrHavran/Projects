@@ -1,5 +1,6 @@
 package org.example.PathFinder;
 
+import org.example.GlobalSettings;
 import org.example.Models.Node;
 import org.example.Models.Path;
 
@@ -11,21 +12,21 @@ public class AStar extends PathFinder {
 
     @Override
     public void findPath(Node start, Node end){
-        cleanLists();
-
         start.setValue(0);
         start.setParent(null);
         priorityQueue.add(start);
 
         while(!priorityQueue.isEmpty()){
             Node selected = priorityQueue.poll();
-            for(Path path : selected.getPaths()){
-                Node node = path.getOtherNode(selected);
+            for(Node node : selected.getAdjacentNodes()){
+                Path path = selected.getPaths().get(node);
                 if(node == end){
                     node.setParent(selected);
                     createPath(node);
-                    System.out.println("found end");
-                    System.out.println("A* took " + steps + " steps");
+                    if(GlobalSettings.printPathfinderResults){
+                        System.out.println("found end");
+                        System.out.println("A* took " + steps + " steps");
+                    }
                     return;
                 }
 
@@ -44,6 +45,8 @@ public class AStar extends PathFinder {
             }
             visited.add(selected);
         }
-        System.out.println("Didnt find a path");
+        if(GlobalSettings.printPathfinderResults){
+            System.out.println("Didnt find a path");
+        }
     }
 }

@@ -2,14 +2,13 @@ package org.example.PathFinder;
 
 import org.example.Models.Node;
 import org.example.Models.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+
+import java.util.*;
 
 public abstract class PathFinder {
 
     protected final ArrayList<Node> queue;
-    protected final ArrayList<Node> visited;
+    protected HashSet<Node> visited;
     protected final PriorityQueue<Node> priorityQueue = new PriorityQueue<>(
             Comparator.comparingDouble(Node::getValue)
     );
@@ -18,24 +17,16 @@ public abstract class PathFinder {
      * Results of the pathfinder get stored here
      */
     protected final ArrayList<Node> nodes;
-    protected final ArrayList<Path> path;
+    protected final ArrayList<Path> fullPath;
     protected int steps;
+    protected double pathLength;
 
     public PathFinder() {
-        this.path = new ArrayList<>();
+        this.fullPath = new ArrayList<>();
         this.nodes = new ArrayList<>();
         this.queue = new ArrayList<>();
-        this.visited = new ArrayList<>();
-        this.steps = 0;
+        this.visited = new HashSet<>();
     }
-
-    protected void cleanLists(){
-        queue.clear();
-        visited.clear();
-        nodes.clear();
-        path.clear();
-        steps = 0;
-    };
 
     public abstract void findPath(Node start, Node end);
 
@@ -43,7 +34,9 @@ public abstract class PathFinder {
         Node selected = node;
 
         while(selected.getParent() != null){
-            path.add(new Path(selected, selected.getParent()));
+            Path path = selected.getPaths().get(selected.getParent());
+            pathLength += path.getDistance();
+            fullPath.add(path);
             selected = selected.getParent();
         }
     }
@@ -57,10 +50,13 @@ public abstract class PathFinder {
     public ArrayList<Node> getNodes() {
         return nodes;
     }
-    public ArrayList<Path> getPath() {
-        return path;
+    public ArrayList<Path> getFullPath() {
+        return fullPath;
     }
     public int getSteps() {
         return steps;
+    }
+    public double getPathLength() {
+        return pathLength;
     }
 }

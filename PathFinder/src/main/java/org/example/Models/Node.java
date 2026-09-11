@@ -1,11 +1,12 @@
 package org.example.Models;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Node {
     private final String id;
     private final double longitude, latitude;
-    private final ArrayList<Path> paths;
+    private final HashMap<Node, Path> paths;
 
     /**
      * Variables used for harder pathfinding algorithms
@@ -19,29 +20,21 @@ public class Node {
         this.id = id;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.paths = new ArrayList<>();
+        this.paths = new HashMap<>();
     }
 
-    public void addPath(Path path){
-        paths.add(path);
+    public void reset() {
+        parent = null;
+        value = Double.MAX_VALUE;
+        totalValue = 0;
     }
 
-    public ArrayList<Node> getAdjacentNodes() {
-        ArrayList<Node> adjacentNodes = new ArrayList<>(paths.size() * 2);
+    public void addPath(Node node, Path path){
+        paths.put(node, path);
+    }
 
-        for (Path path : paths) {
-            Node start = path.getStart();
-            if (start != this) {
-                adjacentNodes.add(start);
-            }
-
-            Node end = path.getEnd();
-            if (end != this) {
-                adjacentNodes.add(end);
-            }
-        }
-
-        return adjacentNodes;
+    public Set<Node> getAdjacentNodes() {
+        return paths.keySet();
     }
     public void setParent(Node parent) {
         this.parent = parent;
@@ -55,7 +48,7 @@ public class Node {
     public double getLongitude() {
         return longitude;
     }
-    public ArrayList<Path> getPaths() {
+    public HashMap<Node, Path> getPaths() {
         return paths;
     }
     public double getValue() {
