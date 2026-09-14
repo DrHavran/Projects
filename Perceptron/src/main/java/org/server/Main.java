@@ -10,9 +10,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Logic logic = new Logic(Shape.HYPERBOLA);
+        Logic logic = new Logic(Shape.CIRCLE);
 
-        logic.loadFile("hyperbola2");
+        logic.loadFile("circle2");
         logic.runPerceptron();
         logic.drawNodes();
 
