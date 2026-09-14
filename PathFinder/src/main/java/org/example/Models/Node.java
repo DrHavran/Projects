@@ -32,7 +32,9 @@ public class Node {
     public void addPath(Node node, Path path){
         paths.put(node, path);
     }
-
+    public String getId() {
+        return id;
+    }
     public Set<Node> getAdjacentNodes() {
         return paths.keySet();
     }

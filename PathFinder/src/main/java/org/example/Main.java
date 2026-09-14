@@ -10,10 +10,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Logic logic = new Logic();
 
-        logic.loadFile("Intersection");
+        logic.loadFile("Street");
         logic.drawMap();
+
         //logic.findPath("66973468", "693323283", true); //Street
-        logic.findCenter();
+        //logic.findConnectedNodes("688027"); // Street
+        logic.findCenter("688027"); //Street
 
         Scene scene = new Scene(logic.getRoot(), GlobalSettings.screenWidth, GlobalSettings.screenHeight);
         primaryStage.setTitle("Map");

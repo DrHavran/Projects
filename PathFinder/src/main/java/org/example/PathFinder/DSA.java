@@ -13,7 +13,6 @@ public class DSA extends PathFinder {
     @Override
     public void findPath(Node start, Node end){
         start.setValue(0);
-        visited.add(start);
         priorityQueue.add(start);
 
         while(!priorityQueue.isEmpty()){

@@ -4,10 +4,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.example.Draw.Draw;
 import org.example.Models.Node;
+import org.example.Models.Path;
 import org.example.PathFinder.*;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
 
 public class Logic {
     private Draw draw;
@@ -17,40 +17,28 @@ public class Logic {
         this.data = new Data();
     }
 
-    public void findCenter(){
+    public void findCenter(String nodeId){
+        FindCenter findCenter = new FindCenter(data);
+        ArrayList<Node> connectedNodes = findConnectedNodes(nodeId, true);
         Node bestNode = null;
         double bestValue = Double.MAX_VALUE;
 
-        Set<String> nodeIds = data.getNodes().keySet();
         int count = 1;
+        for(Node node : connectedNodes){
+            double value = findCenter.calculateCenterValue(node);
 
-        for(String testNode : nodeIds){
-            System.out.println("Testing node " + count + "/" + nodeIds.size());
-            double biggestValue = 0.0;
-            int innerCount = 1;
-
-            for(String endNode : data.getNodes().keySet()){
-                if(Objects.equals(testNode, endNode)){
-                    continue;
-                }
-                System.out.println("    " + innerCount + "/" + (nodeIds.size() - 1));
-                PathFinder pathFinder = findPath(testNode, endNode, false);
-                if(biggestValue < pathFinder.getPathLength()){
-                    biggestValue = pathFinder.getPathLength();
-                }
-                innerCount++;
-            }
-            System.out.println("Node " + count + " has a value of " + biggestValue);
-            if(biggestValue < bestValue){
+            System.out.println("Node " + count +"/" + connectedNodes.size() + " has a value of " + value);
+            if(value < bestValue){
                 System.out.println("That's the new best score!!");
-                bestValue = biggestValue;
-                bestNode = data.getNode(testNode);
+                bestValue = value;
+                bestNode = node;
             }
             count++;
         }
 
         if(bestNode != null){
-            draw.drawNode(bestNode, Color.RED, 3);
+            System.out.println(bestNode.getId());
+            draw.drawNode(bestNode, Color.GREEN, 4);
         }else{
             System.out.println("Couldn't find a center");
         }
@@ -66,6 +54,40 @@ public class Logic {
             pathFinder.getFullPath().forEach(path -> draw.drawLine(path, Color.RED, 1));
         }
         return pathFinder;
+    }
+
+    public ArrayList<Node> findConnectedNodes(String nodeId, boolean drawNode){
+        ArrayList<Node> queue = new ArrayList<>();
+        ArrayList<Node> visited = new ArrayList<>();
+        ArrayList<Path> paths = new ArrayList<>();
+
+        Node start = data.getNode(nodeId);
+        queue.add(start);
+
+        while(!queue.isEmpty()){
+            Node selected = queue.removeFirst();
+            visited.add(selected);
+
+            for(Path path : selected.getPaths().values()){
+                Node node;
+
+                if(path.getStart() == selected){
+                    node = path.getEnd();
+                }else{
+                    node = path.getStart();
+                }
+
+                if(!visited.contains(node) && !queue.contains(node)){
+                    paths.add(path);
+                    queue.add(node);
+                }
+            }
+        }
+        if(drawNode){
+            paths.forEach(path -> draw.drawLine(path, Color.RED, 1));
+            visited.forEach(node -> draw.drawNode(node, Color.RED, 1));
+        }
+        return visited;
     }
 
     public PathFinder getPathFinder(String name){

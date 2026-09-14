@@ -2,7 +2,7 @@ package org.example;
 
 public class GlobalSettings {
     public static String import_folder = "data/";
-    public static String pathFindingAlgorithm = "BFS";
+    public static String pathFindingAlgorithm = "DSA";
     public static boolean printPathfinderResults = false;
 
     /**
