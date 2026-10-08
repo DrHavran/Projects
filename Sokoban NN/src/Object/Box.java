@@ -1,16 +1,13 @@
-package Level;
+package Object;
 
 public class Box {
-    private int x,y;
+    private int x, y;
 
     public Box(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public boolean checkGoal(int[][] goals){
-        return goals[y][x] == 1;
-    }
     public int getX() {
         return x;
     }
@@ -22,5 +19,8 @@ public class Box {
     }
     public void setY(int y) {
         this.y = y;
+    }
+    public String getKey(){
+        return String.valueOf(x) + y;
     }
 }

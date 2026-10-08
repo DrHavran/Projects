@@ -1,25 +1,48 @@
 
-import Level.Level;
-import Level.Box;
+import NN.ReplayMemory;
+import Object.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Logic {
 
-    private final Level level;
+    private final ArrayList<ReplayMemory> memories;
 
     public Logic() {
-        this.level = new Level();
+        this.memories = new ArrayList<>();
+        generateReplayMemory(20);
+        memories.forEach(System.out::println);
     }
 
-    public void move(String move){
-        level.move(move);
-    }
-    public boolean isSolved(){
-        for(Box box : level.getBoxes()){
-            if(!box.checkGoal(level.getGoals())) return false;
+    private void generateReplayMemory(int amount){
+        Level level = new Level();
+
+        double epsilon = 1;
+        boolean randomMove = Math.random() < epsilon;
+
+        for(int i = 0; i < amount; i++){
+            Direction direction = null;
+
+            if(randomMove){
+                ArrayList<Direction> directions = Direction.directions;
+                Collections.shuffle(directions);
+
+                for(Direction d : directions){
+                    if(level.isValidMove(d)){
+                        direction = d;
+                        break;
+                    }
+                }
+                if(direction == null){
+                    throw new NoValidMoves("There aren't any valid moves");
+                }
+            }else{
+                //TODO a
+                direction = Direction.UP;
+            }
+
+            memories.add(level.move(direction));
         }
-        return true;
-    }
-    public Level getLevel() {
-        return level;
     }
 }
