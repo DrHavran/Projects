@@ -30,7 +30,7 @@ public class Node {
     public Double[] getValues() {
         return values;
     }
-    public int getSize() {
+    public int getValuesSize() {
         return values.length;
     }
     public String getName(){

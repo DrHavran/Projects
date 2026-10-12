@@ -15,6 +15,7 @@ public class Cluster {
         this.moved = false;
     }
 
+    // Moves the cluster depending on the average of all the nodes inside
     public void average() {
         moved = false;
         Double[] totals = new Double[values.length];
@@ -39,6 +40,7 @@ public class Cluster {
         }
     }
 
+    // Sets the cluster "type" based on the majority of nodes in it
     public void majority(){
         HashMap<String, Integer> counts = new HashMap<>();
         for(Node node : nodes) {

@@ -17,14 +17,31 @@ public class Data {
         load("Test_iris.csv", testNodes);
     }
 
+    // K-means++
     public void createClusters(){
-        for(int i = 0; i < Settings.clusters; i++){
-            Double[] values = new Double[nodes.getFirst().getSize()];
-            Node randomNode = nodes.get((int) (Math.random() * nodes.size()));
-            for(int v = 0; v < values.length; v++) {
-                values[v] = randomNode.getValues()[v];
+        // Pick a random node
+        clusters.add(new Cluster(copyValues(nodes.get((int)(Math.random() * nodes.size())))));
+
+        while(clusters.size() < Settings.clusters){
+            double[] d2 = new double[nodes.size()];
+            double sum = 0;
+            for(int i = 0; i < nodes.size(); i++){
+                double best = Double.MAX_VALUE;
+                for(Cluster c : clusters){
+                    best = Math.min(best, distSq(nodes.get(i).getValues(), c.getValues()));
+                }
+                d2[i] = best;
+                sum += best;
             }
-            clusters.add(new Cluster(values));
+
+            double r = Math.random() * sum;
+            double acc = 0;
+            int pick = 0;
+            for(int i = 0; i < nodes.size(); i++){
+                acc += d2[i];
+                if(acc >= r){ pick = i; break; }
+            }
+            clusters.add(new Cluster(copyValues(nodes.get(pick))));
         }
     }
 
@@ -51,6 +68,24 @@ public class Data {
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private Double[] copyValues(Node node){
+        Double[] src = node.getValues();
+        Double[] out = new Double[src.length];
+        for(int i = 0; i < src.length; i++){
+            out[i] = src[i];
+        }
+        return out;
+    }
+
+    private double distSq(Double[] a, Double[] b){
+        double sum = 0;
+        for(int i = 0; i < a.length; i++){
+            double d = a[i] - b[i];
+            sum += d * d;
+        }
+        return sum;
     }
 
     public ArrayList<Node> getNodes() {

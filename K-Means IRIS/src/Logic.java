@@ -51,7 +51,7 @@ public class Logic {
         for(Node node : data.getNodes()) {
             for(Cluster cluster : data.getClusters()) {
                 double distance = 0;
-                for(int i = 0; i < node.getSize(); i++){
+                for(int i = 0; i < node.getValuesSize(); i++){
                     distance += Math.pow(Math.abs(cluster.getValues()[i] - node.getValues()[i]), 2);
                 }
 
@@ -81,7 +81,7 @@ public class Logic {
         for(Node node : data.getTestNodes()) {
             for(Cluster cluster : data.getClusters()) {
                 double distance = 0;
-                for(int i = 0; i < node.getSize(); i++){
+                for(int i = 0; i < node.getValuesSize(); i++){
                     distance += Math.pow(Math.abs(cluster.getValues()[i] - node.getValues()[i]), 2);
                 }
 
