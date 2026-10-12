@@ -1,16 +1,21 @@
 
 import NN.ReplayMemory;
+import NN.RewardSystem;
 import Object.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static Object.Direction.directions;
+
 public class Logic {
 
     private final ArrayList<ReplayMemory> memories;
+    private final RewardSystem reward;
 
     public Logic() {
         this.memories = new ArrayList<>();
+        this.reward = new RewardSystem();
         generateReplayMemory(20);
         memories.forEach(System.out::println);
     }
@@ -38,8 +43,11 @@ public class Logic {
                     throw new NoValidMoves("There aren't any valid moves");
                 }
             }else{
-                //TODO a
-                direction = Direction.UP;
+
+
+                for(Direction d : directions){
+
+                }
             }
 
             memories.add(level.move(direction));
