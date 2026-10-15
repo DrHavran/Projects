@@ -1,66 +1,44 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Scanner;
 
 public class Data {
     private final ArrayList<Node> nodes;
     private final ArrayList<Node> testNodes;
-    private final HashSet<Cluster> clusters;
 
     public Data() {
         this.nodes = new ArrayList<>();
         this.testNodes = new ArrayList<>();
-        this.clusters = new HashSet<>();
 
         load("Iris.csv", nodes);
         load("Test_iris.csv", testNodes);
     }
 
-    // K-means++
-    public void createClusters(){
-        // Pick a random node
-        clusters.add(new Cluster(copyValues(nodes.get((int)(Math.random() * nodes.size())))));
-
-        while(clusters.size() < Settings.clusters){
-            double[] d2 = new double[nodes.size()];
-            double sum = 0;
-            for(int i = 0; i < nodes.size(); i++){
-                double best = Double.MAX_VALUE;
-                for(Cluster c : clusters){
-                    best = Math.min(best, distSq(nodes.get(i).getValues(), c.getValues()));
-                }
-                d2[i] = best;
-                sum += best;
-            }
-
-            double r = Math.random() * sum;
-            double acc = 0;
-            int pick = 0;
-            for(int i = 0; i < nodes.size(); i++){
-                acc += d2[i];
-                if(acc >= r){ pick = i; break; }
-            }
-            clusters.add(new Cluster(copyValues(nodes.get(pick))));
-        }
-    }
-
     public void load(String string, ArrayList<Node> list) {
         try {
             Scanner sc = new Scanner(new File(string));
-            sc.nextLine();
+            String[] parts = sc.nextLine().split(",");
+            int nameIndex = 0;
+            for(int i = 0; i < parts.length; i++){
+                if(parts[i].equals(Settings.nameType)){
+                    nameIndex = i;
+                    break;
+                }
+            }
 
             while (sc.hasNextLine()) {
-                String[] line = sc.nextLine().split(",");
-                Double[] values = new Double[line.length - 1];
-                String name = null;
+                parts = sc.nextLine().split(",");
+                Double[] values = new Double[parts.length - 1];
+                String name = parts[nameIndex];
 
-                for(int i = 0; i < line.length  ; i++) {
-                    try{
-                        values[i] = Double.parseDouble(line[i]);
-                    }catch (NumberFormatException e) {
-                        name = line[i];
+                for(int i = 0; i < parts.length; i++) {
+                    int offset = 0;
+                    if(i == nameIndex) {
+                        continue;
+                    }else if (i > nameIndex){
+                        offset = -1;
                     }
+                    values[i + offset] = Double.parseDouble(parts[i]);
                 }
                 list.add(new Node(name, values));
             }
@@ -70,31 +48,10 @@ public class Data {
         }
     }
 
-    private Double[] copyValues(Node node){
-        Double[] src = node.getValues();
-        Double[] out = new Double[src.length];
-        for(int i = 0; i < src.length; i++){
-            out[i] = src[i];
-        }
-        return out;
-    }
-
-    private double distSq(Double[] a, Double[] b){
-        double sum = 0;
-        for(int i = 0; i < a.length; i++){
-            double d = a[i] - b[i];
-            sum += d * d;
-        }
-        return sum;
-    }
-
     public ArrayList<Node> getNodes() {
         return nodes;
     }
     public ArrayList<Node> getTestNodes(){
         return testNodes;
-    }
-    public HashSet<Cluster> getClusters() {
-        return clusters;
     }
 }

@@ -1,6 +1,6 @@
 public class Node {
-    private final Double[] values;
     private final String name;
+    private final Double[] values;
     private double clusterDistance;
     private Cluster closestCluster;
 
@@ -15,6 +15,7 @@ public class Node {
         clusterDistance = Double.MAX_VALUE;
         closestCluster = null;
     }
+
     public void setClosestCluster(Cluster closestCluster) {
         this.closestCluster = closestCluster;
     }
