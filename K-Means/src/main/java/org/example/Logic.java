@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Models.Bounds;
 import org.example.Models.Cluster;
 import org.example.Models.Node;
 
@@ -15,42 +16,46 @@ public class Logic {
 
         do{
             movement = false;
-            step();
+
+            for(Node node : data.getNodes()) {
+                for(Cluster cluster : data.getClusters()) {
+                    calculateNode(cluster, node);
+                }
+            }
+
+            // Move the clusters based on the new data
             for(Cluster cluster : data.getClusters()) {
-                if (cluster.hasMoved()) {
+                if(cluster.step()){
                     movement = true;
-                    break;
                 }
             }
-        }while (movement);
+        }while(movement);
     }
 
-    private void step() {
-        for(Node node : data.getNodes()) {
-            for(Cluster cluster : data.getClusters()) {
-                double xDistance = Math.abs(cluster.getX() - node.getX());
-                double yDistance = Math.abs(cluster.getY() - node.getY());
-                double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    private void calculateNode(Cluster cluster, Node node){
+        double distance = calculateDistance(cluster, node);
 
-                if(distance < node.getClusterDistance()) {
-                    Cluster currentCluster = node.getClosestCluster();
-                    if(currentCluster != null) {
-                        currentCluster.removeNode(node);
-                    }
-
-                    node.setClusterDistance(distance);
-                    node.setClosestCluster(cluster);
-
-                    cluster.addNode(node);
-                }
+        if(distance < node.getClusterDistance()) {
+            Cluster currentCluster = node.getClosestCluster();
+            if(currentCluster != null) {
+                currentCluster.removeNode(node);
             }
-        }
+            cluster.addNode(node);
 
-        for(Cluster cluster : data.getClusters()) {
-            cluster.average();
+            node.setClusterDistance(distance);
+            node.setClosestCluster(cluster);
         }
     }
 
+    private double calculateDistance(Cluster cluster, Node node) {
+        double dx = cluster.getX() - node.getX();
+        double dy = cluster.getY() - node.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public Bounds getBounds(){
+        return data.getBounds();
+    }
     public HashSet<Cluster> getClusters() {
         return data.getClusters();
     }

@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Models.Bounds;
 import org.example.Models.Cluster;
 import org.example.Models.Node;
 
@@ -10,8 +11,7 @@ import java.util.Scanner;
 public class Data {
     private final HashSet<Node> nodes;
     private final HashSet<Cluster> clusters;
-
-    private double minX, minY, maxX, maxY;
+    private Bounds bounds;
 
     public Data() {
         this.nodes = new HashSet<>();
@@ -20,9 +20,14 @@ public class Data {
     }
 
     private void loadData() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
         try {
             Scanner sc = new Scanner(new File("data.csv"));
 
+            // Load nodes while also keeping track of MIN/MAX of Y and X
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
                 double x = Double.parseDouble(line[0]);
@@ -37,32 +42,22 @@ public class Data {
             }
             sc.close();
 
-            for (Node node : nodes) {
-                node.set(
-                        transformX(node.getX()),
-                        transformY(node.getY())
-                );
-            }
-
             for(int i = 0; i < Settings.clusters; i++){
                 double x = minX + Math.random() * (maxX - minX);
                 double y = minY + Math.random() * (maxY - minY);
 
-                clusters.add(new Cluster(transformX(x), transformY(y)));
+                clusters.add(new Cluster(x, y));
             }
 
+            this.bounds = new Bounds(minX, maxX, minY, maxY);
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private double transformX(double x) {
-        return (x - minX) / (maxX - minX) * Settings.screenWidth;
+    public Bounds getBounds() {
+        return bounds;
     }
-    private double transformY(double y) {
-        return Settings.screenHeight - (y - minY) / (maxY - minY) * Settings.screenHeight;
-    }
-
     public HashSet<Node> getNodes() {
         return nodes;
     }

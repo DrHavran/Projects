@@ -12,11 +12,6 @@ public class Node {
         closestCluster = null;
     }
 
-    public void set(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
     public void setClosestCluster(Cluster closestCluster) {
         this.closestCluster = closestCluster;
     }
