@@ -43,10 +43,13 @@ public class Logic {
                     throw new NoValidMoves("There aren't any valid moves");
                 }
             }else{
-
-
+                double bestScore = Double.MIN_VALUE;
                 for(Direction d : directions){
-
+                    double directionReward = reward.getValue(level, d);
+                    if(directionReward > bestScore){
+                        direction = d;
+                        bestScore = directionReward;
+                    }
                 }
             }
 
